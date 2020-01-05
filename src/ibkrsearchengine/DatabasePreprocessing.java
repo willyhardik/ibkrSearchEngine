@@ -18,6 +18,7 @@ public class DatabasePreprocessing<E> {
 		
 		for(String name : attributeNames) {
 			List<E> list = (List) map.values();
+			System.out.println(list.get(0).toString());
 			objectMap.put(name, new Attribute<E>(name, list));
 		}
 	}

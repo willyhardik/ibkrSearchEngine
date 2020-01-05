@@ -9,12 +9,13 @@ public class IBKRSearchEngine {
 	public static void main(String[] args) {
 		DatabaseReader databaseReader = new DatabaseReader();
 		HashMap<String,Employee> employeeRecords = databaseReader.getDatabase();
-		ArrayList<String> attributes = databaseReader.getAttributes();
-//		for(String key : employeeRecords.keySet()) {
-//			System.out.println(key);
-//		}
+		ArrayList<String> attributeList = databaseReader.getAttributes();
+	
+		DatabasePreprocessing databasePreprocessing = new DatabasePreprocessing(employeeRecords, attributeList);
+		HashMap<String, Attribute> attributeMap = (HashMap<String, Attribute>) databasePreprocessing.getObjectMap();
 		
-//		DatabasePreprocessing databasePreprocessing = new DatabasePreprocessing();
-		
+		for(String key : attributeMap.keySet()) {
+			System.out.println(key);
+		}
 	}
 }
