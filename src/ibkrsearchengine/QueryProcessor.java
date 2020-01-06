@@ -34,13 +34,16 @@ public class QueryProcessor {
 				if(operationMap.get(attributeName) instanceof String) {
 					tempResultSet = equalOperation(attributeName, (String) operationMap.get(attributeName), tempResultSet);
 				}
-//				else if(operationMap.get(key) instanceof TreeNode) {
-//					greaterThanOperation(key, operationMap.get(key), attributeMap);
-//				}
+				else if(operationMap.get(attributeName) instanceof TreeNode) {
+					if(attributeName.startsWith("~")) {
+						lessThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+					}
+					else {
+						greaterThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+					}
+				}
 				else if(operationMap.get(attributeName) instanceof HashSet) {
-//					System.out.println("Af");
 					HashSet<String> queryResultSet = (HashSet<String>) operationMap.get(attributeName);
-//					System.out.println(queryResultSet);
 					if(tempResultSet.isEmpty()) {
 						tempResultSet.addAll(queryResultSet);
 					}
@@ -53,103 +56,87 @@ public class QueryProcessor {
 							}
 						}	
 					}
-					
-//					System.out.println(tempResultSet);
 				} 
-//				Iterator resultIterator = resultSet.iterator();
-//				while(resultIterator.hasNext()) {
-//					String row = (String) resultIterator.next();
-//					if(!tempResultSet.contains(row)) {
-//						
-//					}
-//				}
 			}
 			resultSet.addAll(tempResultSet);
 		}
 		return resultSet;
 	}
 
-//	public void getResult(PriorityQueue queue, HashMap<String, Attribute> attributeMap, HashMap votecache) {
-//		//loop through queue 
-//		HashSet<String> resultSet = new HashSet<String>();
-//		Iterator queueIterator = queue.iterator();
-//		
-//		
-//		while(queueIterator.hasNext()) {
-//			Object obj = queueIterator.next();
-//			resultSet.addAll(getAndOperationResults(attributeMap, obj.map, votecache.clone()));
-//		}
-//		// fetch the object
-//		
-//		// iterate over the object's hashmap
-//		
-//		// fetch the linked list from the map
-//		
-//		// vote the items in the map
-//	}
-//
-//	public HashSet<String> getAndOperationResults(HashMap<String, Attribute> attributeMap,
-//			HashMap<String, String> operationMap, HashMap<String, Integer> votecache) {
-//		HashSet<String> tempResultSet = new HashSet<String>();
-//
-//		String attribute, operator, value = "";
-//
-//		for (Map.Entry<String, String> operation : operationMap.entrySet()) {
-//			operationcount++;
-//			attribute = operation.parameter;
-//			operator = operation.operator;
-//			value = operation.value;
-//
-//			if (operator == "=") {
-//				tempResultSet.addAll(
-//						equalOperation(attribute, value, operationMap.size(), attributeMap, votecache, tempResultSet));
-//			} else if (operator == ">") {
-//				tempResultSet.addAll(greaterThanOperation(attribute, value, operationMap.size(), attributeMap,
-//						votecache, tempResultSet));
-//			} else if (operator == "<") {
-//				tempResultSet.addAll(lessThanOperation(attribute, value, operationMap.size(), attributeMap, votecache,
-//						tempResultSet));
-//			} else if (operator == "!=") {
-//				tempResultSet.addAll(notEqualOperation(attribute, value, operationMap.size(), attributeMap, votecache,
-//						tempResultSet));
-//			}
-//
-//		}
-//		return tempResultSet;
-//	}
-//
-//	private HashSet<String> notEqualOperation(String attribute, String value, int OperationCount,
-//			HashMap<String, String> attributeMap, HashMap<String, Integer> votecache, HashSet<String> tempResultSet) {
-//
-//		for (Map.Entry<String, LinkedList> operation : attributeMap.entrySet()) {
-//
-//		}
-//
-//		return tempResultSet;
-//	}
-//
-	public HashSet<String> greaterThanOperation(String attribute, TreeNode node, 
-			HashMap<String, String> attributeMap) {
+	
+	
+	
+	public HashSet<String> greaterThanOperation(String attribute, TreeNode node) {
+		String nodeValue = node.data;
 		HashSet<String> tempResultSet = new HashSet<String>();
+		TreeNode rootNode = attributeMap.get(attribute).root; 
 		
-		
-		
-		
+		while(rootNode != null) {
+			System.out.println("DSF"+rootNode.data);
+			if(rootNode.data.compareTo(nodeValue) > 0 ) {
+				tempResultSet.add(rootNode.data);
+				tempResultSet.addAll(getNodesFromTree(rootNode.right));
+				rootNode = rootNode.left;
+			}
+			else {
+				rootNode = rootNode.right;
+			}
+//			System.out.println("DSFdsf"+tempResultSet);	
+		}
+		System.out.println(tempResultSet);
 		return tempResultSet;
 	}
-//
-//	private HashSet<String> lessThanOperation(String attribute, String value, int operationCount,
-//			HashMap<String, String> attributeMap, HashMap<String, Integer> votecache, HashSet<String> tempResultSet) {
-//
-//		return tempResultSet;
-//	}
-//
+	
+	public HashSet<String> lessThanOperation(String attribute, TreeNode node) {
+		String nodeValue = node.data;
+		HashSet<String> tempResultSet = new HashSet<String>();
+		TreeNode rootNode = attributeMap.get(attribute).root; 
+		
+		while(rootNode != null) {
+			System.out.println("DSF"+rootNode.data);
+			if(rootNode.data.compareTo(nodeValue) < 0 ) {
+				tempResultSet.add(rootNode.data);
+				tempResultSet.addAll(getNodesFromTree(rootNode.right));
+				rootNode = rootNode.left;
+			}
+			else {
+				rootNode = rootNode.right;
+			}
+			System.out.println("DSFdsf"+tempResultSet);	
+		}
+		System.out.println(tempResultSet);
+		return tempResultSet;
+	}
+	
+	
+	public HashSet<String> getNodesFromTree(TreeNode newNode) {
+		HashSet<String> tempResultSet = new HashSet<String>();
+		Stack<TreeNode> nodeStack = new Stack<TreeNode>();
+		while(!nodeStack.isEmpty() || newNode != null) {
+			if(newNode != null) {
+				nodeStack.push(newNode);
+				newNode = newNode.left;
+			}
+			else {
+				newNode = nodeStack.pop();
+//				System.out.println(newNode.data);
+				tempResultSet.add(newNode.data);
+				newNode = newNode.right;
+				
+			}
+		}
+		return tempResultSet;
+	}
+	
+
 	public HashSet<String> equalOperation(String attribute, String value, HashSet<String> resultSet) {
 		System.out.println("-"+attribute + "-" + value + "-");
 		LinkedList<String> valueList = (LinkedList) attributeMap.get(attribute).attributeMap.get(value);
 		System.out.println(attributeMap.get(attribute));
 		System.out.println(attribute + "-" +valueList);
 		Iterator recordIterator = valueList.iterator();
+		HashSet<String> tempResultSet = new HashSet<String>();
+		
 		
 		if(resultSet.isEmpty()) {
 			while (recordIterator.hasNext()) {
@@ -160,12 +147,12 @@ public class QueryProcessor {
 		else {
 			while (recordIterator.hasNext()) {
 				String row = (String) recordIterator.next(); 
-				if(!resultSet.contains(row)) {
-					resultSet.remove(row);
+				if(resultSet.contains(row)) {
+					tempResultSet.add(row);
 				}
-					
 			}
+			return tempResultSet;
 		}
-		return resultSet;
+		
 	}
 }

@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class QueryBuilder {
@@ -79,20 +80,25 @@ public class QueryBuilder {
 
 					if ("=".equals(operator)) {
 						operationMap.put(attribute, value);
-					} else if (operator == ">") {
-						operationMap.put(attribute, getNode(attribute, value, false));
 					}
-//					else if (operator == "<") {
-//						operationMap.put(attribute, getNode(attribute, value, false));
-//					} else if (operator == ">=") {
+					else if (">".equals(operator)) {
+						operationMap.put(attribute, getNode(attribute, value, false));
+//						System.out.println("entered to get node"+getNode(attribute, value, false).data);
+					}
+					else if ("<".equals(operator)) {
+						operationMap.put("~"+attribute, getReverseNode("~"+attribute, value, false));
+//						System.out.println("entered to get node"+getNode(attribute, value, false).data);
+					}
+//					else if (operator == ">=") {
 //						operationMap.put(attribute, getNode(attribute, value, true));
 //					} else if (operator == "<=") {
 //						operationMap.put(attribute, getNode(attribute, value, true));
 //					} 
-					else if (operator == "!=") {
+					else if ("!=".equals(operator)) {
 						operationMap.put("~" + attribute, value);
 					}
 				}
+//				System.out.println(operationMap);
 			}
 			queue.add(operationMap);
 		}
@@ -103,7 +109,26 @@ public class QueryBuilder {
 
 	private TreeNode getNode(String attribute, String value, boolean includerRoot) {
 		TreeNode searchPointer = attributeMap.get(attribute).root;
+		while(searchPointer != null) {
+			System.out.println(searchPointer.data);
+			if(value.equals(searchPointer.getData())) {
+				return searchPointer;
+			}
+			else if(value.compareTo(searchPointer.getData()) > 0) {
+				searchPointer = searchPointer.right;
+			}
+			else {
+				searchPointer = searchPointer.left;
+			}
+		}
 		
+		return searchPointer;
+	}
+	
+	
+	
+	private TreeNode getReverseNode(String attribute, String value, boolean includerRoot) {
+		TreeNode searchPointer = attributeMap.get(attribute).root;
 		while(searchPointer != null) {
 			if(value.equals(searchPointer.getData())) {
 				return searchPointer;
@@ -118,6 +143,9 @@ public class QueryBuilder {
 		
 		return searchPointer;
 	}
+	
+	
+	
 
 	private String getSubQuery(String query) {
 		int startIndex = -1, endIndex = -1;

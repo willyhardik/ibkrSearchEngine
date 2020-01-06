@@ -3,6 +3,8 @@ package ibkrsearchengine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +18,12 @@ public class Attribute<E> {
 	public Attribute(String attributeName, List<Employee> list) {
 		
 		this.attributeName = attributeName;
-		buildPositiveAttributeMap(list);
-		buildNegativeAttributeMap(list);
+		if(attributeName.startsWith("~")) {
+			buildNegativeAttributeMap(list);
+		}
+		else {
+			buildPositiveAttributeMap(list);
+		}
 		this.root = buildAttributeTree(list);
 		this.attributeMap = getAttributeMap();
 	}
@@ -25,7 +31,13 @@ public class Attribute<E> {
 	public TreeNode buildAttributeTree(List<Employee> list) {
 		
 		List<String> keyList = new ArrayList<>(attributeMap.keySet());
-		Collections.sort(keyList);
+		if(attributeName.startsWith("~")) {
+			Collections.sort(keyList, Collections.reverseOrder());
+		}
+		else {
+			Collections.sort(keyList);
+		}
+		
 		return sortedListToTree(keyList, 0, keyList.size() - 1);
 	}
 
@@ -44,22 +56,27 @@ public class Attribute<E> {
 
 	public void buildNegativeAttributeMap(List<Employee> list) {
 		
-		String[] uniqueValue = new String[attributeMap.size()];
-		int uniqueValueIndex = 0;
-		for(String value : attributeMap.keySet()) {
-			uniqueValue[uniqueValueIndex++] = value;
+		HashSet<String> uniqueSet = new HashSet<String>();
+		
+		for(Employee employee : list) {
+			String attributeValue = employee.getValue(attributeName.substring(1));
+			if(!uniqueSet.contains(attributeValue)) {
+				uniqueSet.add(attributeValue);
+				attributeMap.put(attributeValue, new LinkedList<String>());
+			}
 		}
 		
-		for(String value : uniqueValue) {
-			
-			String negative_value = "~".concat(value);
-			list.removeAll(attributeMap.get(value));
-			LinkedList<String> rowList = new LinkedList<>();
-			for(Employee employee : list) {
-				rowList.add(employee.getId());
+		Iterator uniqueSetIterator = uniqueSet.iterator();
+		while(uniqueSetIterator.hasNext()) {
+			String attributeValue = (String) uniqueSetIterator.next();
+			for(Employee employee :list) {
+				if(!attributeValue.equals(employee.getValue(attributeName.substring(1)))) {
+					attributeMap.get(attributeValue).add(employee.getId());
+				}
 			}
-			attributeMap.put(negative_value, rowList);
+//			System.out.println(attributeName +" "+ attributeValue +" "+ attributeMap.get(attributeValue));
 		}
+		
 	}
 
 	public void buildPositiveAttributeMap(List<Employee> list) {

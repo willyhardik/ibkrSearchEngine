@@ -25,6 +25,7 @@ public class DatabasePreprocessing<E> {
 				list.add(employee);
 			}
 			objectMap.put(name, new Attribute<Employee>(name, list));
+			objectMap.put("~"+name, new Attribute<Employee>("~"+name, list));
 		}
 	}
 
