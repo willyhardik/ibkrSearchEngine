@@ -36,10 +36,10 @@ public class QueryProcessor {
 				}
 				else if(operationMap.get(attributeName) instanceof TreeNode) {
 					if(attributeName.startsWith("~")) {
-						lessThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+						tempResultSet = lessThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
 					}
 					else {
-						greaterThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+						tempResultSet = greaterThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
 					}
 				}
 				else if(operationMap.get(attributeName) instanceof HashSet) {
@@ -72,7 +72,7 @@ public class QueryProcessor {
 		TreeNode rootNode = attributeMap.get(attribute).root; 
 		
 		while(rootNode != null) {
-			System.out.println("DSF"+rootNode.data);
+//			System.out.println("DSF"+rootNode.data);
 			if(rootNode.data.compareTo(nodeValue) > 0 ) {
 				tempResultSet.add(rootNode.data);
 				tempResultSet.addAll(getNodesFromTree(rootNode.right));
@@ -83,7 +83,7 @@ public class QueryProcessor {
 			}
 //			System.out.println("DSFdsf"+tempResultSet);	
 		}
-		System.out.println(tempResultSet);
+//		System.out.println(tempResultSet);
 		return tempResultSet;
 	}
 	
@@ -93,7 +93,7 @@ public class QueryProcessor {
 		TreeNode rootNode = attributeMap.get(attribute).root; 
 		
 		while(rootNode != null) {
-			System.out.println("DSF"+rootNode.data);
+//			System.out.println("DSF"+rootNode.data);
 			if(rootNode.data.compareTo(nodeValue) < 0 ) {
 				tempResultSet.add(rootNode.data);
 				tempResultSet.addAll(getNodesFromTree(rootNode.right));
@@ -102,9 +102,9 @@ public class QueryProcessor {
 			else {
 				rootNode = rootNode.right;
 			}
-			System.out.println("DSFdsf"+tempResultSet);	
+//			System.out.println("DSFdsf"+tempResultSet);	
 		}
-		System.out.println(tempResultSet);
+//		System.out.println(tesmpResultSet);
 		return tempResultSet;
 	}
 	
@@ -130,10 +130,10 @@ public class QueryProcessor {
 	
 
 	public HashSet<String> equalOperation(String attribute, String value, HashSet<String> resultSet) {
-		System.out.println("-"+attribute + "-" + value + "-");
+//		System.out.println("-"+attribute + "-" + value + "-");
 		LinkedList<String> valueList = (LinkedList) attributeMap.get(attribute).attributeMap.get(value);
-		System.out.println(attributeMap.get(attribute));
-		System.out.println(attribute + "-" +valueList);
+//		System.out.println(attributeMap.get(attribute));
+//		System.out.println(attribute + "-" +valueList);
 		Iterator recordIterator = valueList.iterator();
 		HashSet<String> tempResultSet = new HashSet<String>();
 		

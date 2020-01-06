@@ -26,6 +26,8 @@ public class QueryBuilder {
 		int queryNumber = 1;
 		QueryProcessor queryProcessor = new QueryProcessor(attributeMap);
 		ArrayList<HashMap<String,Object>> queue ;
+		query = simplifyQuery(query);
+//		System.out.println(query);
 		
 		// get substring with the smallest brackets
 		while (query.indexOf("(") != -1) {
@@ -36,7 +38,7 @@ public class QueryBuilder {
 			resultSet.addAll(queryProcessor.getResults(queue));
 			queryMap.put("#query" + queryNumber, resultSet);
 			query = query.replace("(" + subQuery + ")", "#query" + queryNumber++);
-			System.out.println(resultSet);
+			System.out.println(resultSet+"----"+queryMap);
 		}
 
 		System.out.println(query);
@@ -49,6 +51,56 @@ public class QueryBuilder {
 		// convert substring to
 	}
 
+	private String simplifyQuery(String query) {
+		String newQuery = "", tempQuery = "";
+		String[] tokens = query.split(" ");
+		boolean querySplitNeeded = false;
+		
+		for (int tokenIndex = 0 ; tokenIndex < tokens.length ; tokenIndex++ ) {
+			if("and".equals(tokens[tokenIndex]) || "or".equals(tokens[tokenIndex])) {
+				if(querySplitNeeded) {
+					String copyOfTempQuery = tempQuery;
+					tempQuery = tempQuery.replace(">=", ">");
+					tempQuery = tempQuery.replace("<=", "<");
+
+					copyOfTempQuery = copyOfTempQuery.replace(">=", "=");
+					copyOfTempQuery = copyOfTempQuery.replace("<=", "=");
+					newQuery = newQuery + " ( " + tempQuery + " or " + copyOfTempQuery + " ) " + tokens[tokenIndex] ;
+//					System.out.println(tempQuery);
+					querySplitNeeded = false;
+				}
+				else {
+					newQuery = newQuery +" "+ tempQuery +" "+ tokens[tokenIndex];
+				}
+				tempQuery = "";
+			}
+			else {
+				if(">=".equals(tokens[tokenIndex]) || "<=".equals(tokens[tokenIndex])) {
+					querySplitNeeded = true;
+				}
+				tempQuery = tempQuery +" "+ tokens[tokenIndex];
+			}
+//			System.out.println(tokens[tokenIndex]);
+
+		}
+		if(querySplitNeeded) {
+			String copyOfTempQuery = tempQuery;
+			tempQuery = tempQuery.replace(">=", ">");
+			tempQuery = tempQuery.replace("<=", "<");
+
+			copyOfTempQuery = copyOfTempQuery.replace(">=", "=");
+			copyOfTempQuery = copyOfTempQuery.replace("<=", "=");
+			newQuery = newQuery + "(" + tempQuery + "or" + copyOfTempQuery + ")";
+//			System.out.println(tempQuery);
+			querySplitNeeded = false;
+		}
+		else {
+			newQuery = newQuery + tempQuery;
+		}
+//		System.out.println(newQuery);
+		return newQuery;
+	}
+
 	private ArrayList<HashMap<String,Object>> processQuery(String query) {
 
 		ArrayList<HashMap<String,Object>> queue = new ArrayList<>();// for some reason can't instantiate queue
@@ -59,10 +111,13 @@ public class QueryBuilder {
 			HashMap<String,Object> operationMap = new HashMap();
 			
 			for (String subOperation : subOperations) {
+//				System.out.println(subOperation);
+				subOperation = subOperation.trim();
 				if (subOperation.startsWith("#query")) {
+//					System.out.println("df"+queryMap.get(subOperation));
 					operationMap.put(subOperation, queryMap.get(subOperation));
-					
-				} else {
+				} 
+				else {
 					
 					StringTokenizer parameter = new StringTokenizer(subOperation, "!><=", true);
 					String attribute, operator, value;
@@ -89,9 +144,10 @@ public class QueryBuilder {
 						operationMap.put("~"+attribute, getReverseNode("~"+attribute, value, false));
 //						System.out.println("entered to get node"+getNode(attribute, value, false).data);
 					}
-//					else if (operator == ">=") {
+//					else if (">=".equals(operator)) {
 //						operationMap.put(attribute, getNode(attribute, value, true));
-//					} else if (operator == "<=") {
+//					} 
+//					else if ("<=".equals(operator)) {
 //						operationMap.put(attribute, getNode(attribute, value, true));
 //					} 
 					else if ("!=".equals(operator)) {
@@ -110,7 +166,7 @@ public class QueryBuilder {
 	private TreeNode getNode(String attribute, String value, boolean includerRoot) {
 		TreeNode searchPointer = attributeMap.get(attribute).root;
 		while(searchPointer != null) {
-			System.out.println(searchPointer.data);
+//			System.out.println(searchPointer.data);
 			if(value.equals(searchPointer.getData())) {
 				return searchPointer;
 			}
