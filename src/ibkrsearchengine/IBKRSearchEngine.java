@@ -12,10 +12,8 @@ public class IBKRSearchEngine {
 		ArrayList<String> attributeList = databaseReader.getAttributes();
 	
 		DatabasePreprocessing databasePreprocessing = new DatabasePreprocessing(employeeRecords, attributeList);
+		
 		HashMap<String, Attribute> attributeMap = (HashMap<String, Attribute>) databasePreprocessing.getObjectMap();
 		
-		for(String key : attributeMap.keySet()) {
-			System.out.println(key);
-		}
 	}
 }

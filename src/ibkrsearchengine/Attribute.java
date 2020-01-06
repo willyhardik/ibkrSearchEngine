@@ -2,32 +2,34 @@ package ibkrsearchengine;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class Attribute<E> {
 	
-	private String attributeName;
-	private Map<String, LinkedList<E>> attributeMap;
-	private TreeNode root;
+	public String attributeName;
+	public HashMap<String, LinkedList<String>> attributeMap;
+	public TreeNode root;
 	
-	public Attribute(String attributeName, List<E> list) {
-		
+	public Attribute(String attributeName, List<Employee> list) {
+		this.attributeMap = new HashMap<String, LinkedList<String>>();
 		this.attributeName = attributeName;
 		buildPositiveAttributeMap(list);
 		buildNegativeAttributeMap(list);
 		this.root = buildAttributeTree(list);
+	
 	}
 
-	private TreeNode buildAttributeTree(List<E> list) {
+	public TreeNode buildAttributeTree(List<Employee> list) {
 		
 		List<String> keyList = new ArrayList<>(attributeMap.keySet());
 		Collections.sort(keyList);
 		return sortedListToTree(keyList, 0, keyList.size() - 1);
 	}
 
-	private TreeNode sortedListToTree(List<String> keyList, int start, int end) {
+	public TreeNode sortedListToTree(List<String> keyList, int start, int end) {
 		
 		if(start > end) {
 			return null;
@@ -40,29 +42,39 @@ public class Attribute<E> {
 		return treeNode;
 	}
 
-	private void buildNegativeAttributeMap(List<E> list) {
+	public void buildNegativeAttributeMap(List<Employee> list) {
 		
+		String[] uniqueValue = new String[attributeMap.size()];
+		int uniqueValueIndex = 0;
 		for(String value : attributeMap.keySet()) {
+			uniqueValue[uniqueValueIndex++] = value;
+		}
+		
+		for(String value : uniqueValue) {
 			
 			String negative_value = "~".concat(value);
 			list.removeAll(attributeMap.get(value));
-			attributeMap.put(negative_value, (LinkedList<E>) list);
+			LinkedList<String> rowList = new LinkedList<>();
+			for(Employee employee : list) {
+				rowList.add(employee.getId());
+			}
+			attributeMap.put(negative_value, rowList);
 		}
 	}
 
-	private void buildPositiveAttributeMap(List<E> list) {
+	public void buildPositiveAttributeMap(List<Employee> list) {
 		
 		// Create map<unique values, linkedList> based on attributeName
-		for(E element : list) {
+		for(Employee employee : list) {
+			String positive_value = employee.getValue(attributeName);//element.getValue(attributeName);
+//			System.out.println(positive_value);
 			
-			String positive_value = "value";//element.getValue(attributeName);
- 			
 			if(attributeMap.containsKey(positive_value)) {
-				attributeMap.get(positive_value).add(element);
+				attributeMap.get(positive_value).add(employee.getId());
 			}
 			else {
-				LinkedList<E> linkedList = new LinkedList<>();
-				linkedList.add(element);
+				LinkedList<String> linkedList = new LinkedList<>();
+				linkedList.add(employee.getId());
 				attributeMap.put(positive_value, linkedList);
 			}
 		}
@@ -73,8 +85,9 @@ public class Attribute<E> {
 		return attributeName;
 	}
 	
-	public Map<String, LinkedList<E>> getAttributeMap() {
+	public Map<String, LinkedList<String>> getAttributeMap() {
 		
 		return attributeMap;
 	}
+	
 }

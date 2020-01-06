@@ -58,7 +58,27 @@ public class Employee {
 		this.salary = salary;
 	}
 	
-	
+	public String getValue(String property) {
+		if("id".equals(property)) {
+			return getId();
+		}
+		else if("fname".equals(property)) {
+			return getFname();
+		}
+		else if("lname".equals(property)) {
+			return getLname();
+		}
+		else if("salary".equals(property)) {
+			return getSalary();
+		}
+		else if("dept".equals(property)) {
+			return getDept();
+		}
+		else {
+			return " ";
+		}
+				
+	}
 	
 
 }
