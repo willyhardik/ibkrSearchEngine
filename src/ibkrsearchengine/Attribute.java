@@ -10,16 +10,16 @@ import java.util.Map;
 public class Attribute<E> {
 	
 	public String attributeName;
-	public HashMap<String, LinkedList<String>> attributeMap;
+	public HashMap<String, LinkedList<String>> attributeMap = new HashMap<String, LinkedList<String>>();
 	public TreeNode root;
 	
 	public Attribute(String attributeName, List<Employee> list) {
-		this.attributeMap = new HashMap<String, LinkedList<String>>();
+		
 		this.attributeName = attributeName;
 		buildPositiveAttributeMap(list);
 		buildNegativeAttributeMap(list);
 		this.root = buildAttributeTree(list);
-	
+		this.attributeMap = getAttributeMap();
 	}
 
 	public TreeNode buildAttributeTree(List<Employee> list) {
@@ -85,7 +85,7 @@ public class Attribute<E> {
 		return attributeName;
 	}
 	
-	public Map<String, LinkedList<String>> getAttributeMap() {
+	public HashMap<String, LinkedList<String>> getAttributeMap() {
 		
 		return attributeMap;
 	}

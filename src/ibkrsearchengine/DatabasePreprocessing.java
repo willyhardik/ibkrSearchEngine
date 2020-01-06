@@ -7,14 +7,14 @@ import java.util.Map;
 
 public class DatabasePreprocessing<E> {
 	
-	public HashMap<String, Attribute<Employee>> objectMap;
+	public HashMap<String, Attribute<Employee>> objectMap = new HashMap<String, Attribute<Employee>>();
 	public List<String> attributeNames;
 	
 	public DatabasePreprocessing(HashMap<String, Employee> map, List<String> attributeNames) {
 		
 		this.attributeNames = attributeNames;
-		this.objectMap = new HashMap<String, Attribute<Employee>>();
 		buildObjectMap(map);
+		this.objectMap = (HashMap<String, Attribute<Employee>>) getObjectMap();
 	}
 
 	public void buildObjectMap(HashMap<String, Employee> map) {

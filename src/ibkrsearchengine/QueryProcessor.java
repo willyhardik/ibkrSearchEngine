@@ -1,5 +1,6 @@
-package ibkrSearchEngine;
+package ibkrsearchengine;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,26 +14,30 @@ import java.util.StringTokenizer;
 
 public class QueryProcessor {
 
+	public HashMap<String, Attribute> attributeMap;
 	
-	public HashSet<String> getResults(Queue queue, HashMap attributeMap) {
+	public QueryProcessor(HashMap<String, Attribute> attributeMap) {
+		this.attributeMap = attributeMap;
+	}
+	
+	public HashSet<String> getResults(ArrayList<HashMap<String,Object>> queue) {
 		HashSet<String> resultSet = new HashSet<String>();
 		Iterator subQueryIterator = queue.iterator();
 
 		while (subQueryIterator.hasNext()) {
-			HashMap operationMap = (HashMap) subQueryIterator.next();
-			for (String key : operationMap.KeySet()) {
-				
+			HashMap<String, Object> operationMap = (HashMap) subQueryIterator.next();
+			for (String attributeName : operationMap.keySet()) {
 				HashSet<String> tempResultSet = new HashSet<String>();
 				
-				if(operationMap.get(key) instanceOf String) {
-					tempResultSet = equalOperation(key, operationMap.get(key), attributeMap));
+				if(operationMap.get(attributeName) instanceof String) {
+					tempResultSet = equalOperation(attributeName, (String) operationMap.get(attributeName));
 				}
-				else if(operationMap.get(key) instanceOf TreeNode) {
-					greaterThanOperation(key, operationMap.get(key), attributeMap);
-				}
-				else if(operationMap.get(key) instanceOf Hashmap) {
-					
-				} 
+//				else if(operationMap.get(key) instanceof TreeNode) {
+//					greaterThanOperation(key, operationMap.get(key), attributeMap);
+//				}
+//				else if(operationMap.get(key) instanceof Hashmap) {
+//					
+//				} 
 				Iterator resultIterator = resultSet.iterator();
 				while(resultIterator.hasNext()) {
 					String row = (String) resultIterator.next();
@@ -105,13 +110,11 @@ public class QueryProcessor {
 //		return tempResultSet;
 //	}
 //
-	private HashSet<String> greaterThanOperation(String attribute, TreeNode node, 
+	public HashSet<String> greaterThanOperation(String attribute, TreeNode node, 
 			HashMap<String, String> attributeMap) {
 		HashSet<String> tempResultSet = new HashSet<String>();
 		
-		while(node!=null) {
-			if(node.data > )
-		}
+		
 		
 		
 		return tempResultSet;
@@ -123,10 +126,9 @@ public class QueryProcessor {
 //		return tempResultSet;
 //	}
 //
-	private HashSet<String> equalOperation(String attribute, String value,
-			HashMap<String, String> attributeMap) {
-
-		LinkedList<String> valueList = attributeMap.get(attribute).map.get(value).linkedList;
+	public HashSet<String> equalOperation(String attribute, String value) {
+		
+		LinkedList<String> valueList = (LinkedList) attributeMap.get(attribute).attributeMap.get(value);
 
 		Iterator recordIterator = valueList.iterator();
 		HashSet<String> tempResultSet = new HashSet<String>();
