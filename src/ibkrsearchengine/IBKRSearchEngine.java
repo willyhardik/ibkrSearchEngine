@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import ibkrsearchengine.QueryBuilder;
+import ibkrsearchengine.DatabasePreprocessing;
 
 public class IBKRSearchEngine {
 	public static void main(String[] args) {
@@ -17,10 +18,8 @@ public class IBKRSearchEngine {
 		DatabasePreprocessing databasePreprocessing = new DatabasePreprocessing(employeeRecords, attributeList);
 		HashMap<String, Attribute> attributeMap = (HashMap<String, Attribute>) databasePreprocessing.getObjectMap();
 		
-		Attribute a = attributeMap.get("name");
-		System.out.println(a);
-		String query = "(name = hardik or salary = 1000) and (name = shaunak or country = japan)";
-		
+		String query = "(fname = hardik or salary = 2000) and (fname = shaunak or dept = usa)";
+//		String query = "dept = india";
 		QueryBuilder queryBuilder = new QueryBuilder(attributeMap);
 		queryBuilder.getResult(query);
 	}

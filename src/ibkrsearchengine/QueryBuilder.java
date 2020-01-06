@@ -35,6 +35,7 @@ public class QueryBuilder {
 			resultSet.addAll(queryProcessor.getResults(queue));
 			queryMap.put("#query" + queryNumber, resultSet);
 			query = query.replace("(" + subQuery + ")", "#query" + queryNumber++);
+			System.out.println(resultSet);
 		}
 
 		System.out.println(query);
@@ -66,14 +67,14 @@ public class QueryBuilder {
 					String attribute, operator, value;
 //					System.out.println(parameter.countTokens());
 					if (parameter.countTokens() == 3) {
-						attribute = parameter.nextToken();
-						operator = parameter.nextToken();
-						value = parameter.nextToken();
+						attribute = parameter.nextToken().trim();
+						operator = parameter.nextToken().trim();
+						value = parameter.nextToken().trim();
 					} else {
-						attribute = parameter.nextToken();
-						operator = parameter.nextToken();
-						operator += parameter.nextToken();
-						value = parameter.nextToken();
+						attribute = parameter.nextToken().trim();
+						operator = parameter.nextToken().trim();
+						operator += parameter.nextToken().trim();
+						value = parameter.nextToken().trim();
 					}
 
 					if ("=".equals(operator)) {

@@ -12,6 +12,7 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+
 public class QueryProcessor {
 
 	public HashMap<String, Attribute> attributeMap;
@@ -26,28 +27,45 @@ public class QueryProcessor {
 
 		while (subQueryIterator.hasNext()) {
 			HashMap<String, Object> operationMap = (HashMap) subQueryIterator.next();
+			HashSet<String> tempResultSet = new HashSet<String>();
+			
 			for (String attributeName : operationMap.keySet()) {
-				HashSet<String> tempResultSet = new HashSet<String>();
 				
 				if(operationMap.get(attributeName) instanceof String) {
-					tempResultSet = equalOperation(attributeName, (String) operationMap.get(attributeName));
+					tempResultSet = equalOperation(attributeName, (String) operationMap.get(attributeName), tempResultSet);
 				}
 //				else if(operationMap.get(key) instanceof TreeNode) {
 //					greaterThanOperation(key, operationMap.get(key), attributeMap);
 //				}
-//				else if(operationMap.get(key) instanceof Hashmap) {
-//					
-//				} 
-				Iterator resultIterator = resultSet.iterator();
-				while(resultIterator.hasNext()) {
-					String row = (String) resultIterator.next();
-					if(!tempResultSet.contains(row)) {
-						
+				else if(operationMap.get(attributeName) instanceof HashSet) {
+//					System.out.println("Af");
+					HashSet<String> queryResultSet = (HashSet<String>) operationMap.get(attributeName);
+//					System.out.println(queryResultSet);
+					if(tempResultSet.isEmpty()) {
+						tempResultSet.addAll(queryResultSet);
 					}
-				}
+					else{
+						Iterator recordIterator = queryResultSet.iterator();
+						while (recordIterator.hasNext()) {
+							String row = (String) recordIterator.next(); 
+							if(!tempResultSet.contains(row)) {
+								tempResultSet.remove(row);
+							}
+						}	
+					}
+					
+//					System.out.println(tempResultSet);
+				} 
+//				Iterator resultIterator = resultSet.iterator();
+//				while(resultIterator.hasNext()) {
+//					String row = (String) resultIterator.next();
+//					if(!tempResultSet.contains(row)) {
+//						
+//					}
+//				}
 			}
+			resultSet.addAll(tempResultSet);
 		}
-
 		return resultSet;
 	}
 
@@ -126,18 +144,28 @@ public class QueryProcessor {
 //		return tempResultSet;
 //	}
 //
-	public HashSet<String> equalOperation(String attribute, String value) {
-		
+	public HashSet<String> equalOperation(String attribute, String value, HashSet<String> resultSet) {
+		System.out.println("-"+attribute + "-" + value + "-");
 		LinkedList<String> valueList = (LinkedList) attributeMap.get(attribute).attributeMap.get(value);
-
+		System.out.println(attributeMap.get(attribute));
+		System.out.println(attribute + "-" +valueList);
 		Iterator recordIterator = valueList.iterator();
-		HashSet<String> tempResultSet = new HashSet<String>();
 		
-		while (recordIterator.hasNext()) {
-			tempResultSet.add((String) recordIterator.next());
-			
+		if(resultSet.isEmpty()) {
+			while (recordIterator.hasNext()) {
+				resultSet.add((String) recordIterator.next());
+			}	
+			return resultSet;
 		}
-
-		return tempResultSet;
+		else {
+			while (recordIterator.hasNext()) {
+				String row = (String) recordIterator.next(); 
+				if(!resultSet.contains(row)) {
+					resultSet.remove(row);
+				}
+					
+			}
+		}
+		return resultSet;
 	}
 }
