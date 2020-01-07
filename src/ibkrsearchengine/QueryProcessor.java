@@ -35,12 +35,51 @@ public class QueryProcessor {
 					tempResultSet = equalOperation(attributeName, (String) operationMap.get(attributeName), tempResultSet);
 				}
 				else if(operationMap.get(attributeName) instanceof TreeNode) {
+					HashSet<String> dataSet = new HashSet<String>();
+					HashSet<String> operationTotalSet = new HashSet<String>();
+					
 					if(attributeName.startsWith("~")) {
-						tempResultSet = lessThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+						dataSet = lessThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+						Iterator dataIterator = dataSet.iterator();
+						while(dataIterator.hasNext()) {
+							LinkedList<String> valueList = (LinkedList) attributeMap.get(attributeName.substring(1)).attributeMap.get(dataIterator.next());
+							Iterator recordIterator = valueList.iterator();
+							while(recordIterator.hasNext()) {
+								operationTotalSet.add((String) recordIterator.next());
+							}
+//							System.out.println("dsa"+operationTotalSet);
+						}
 					}
 					else {
-						tempResultSet = greaterThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+						dataSet = greaterThanOperation(attributeName, (TreeNode)operationMap.get(attributeName));
+						Iterator dataIterator = dataSet.iterator();
+						while(dataIterator.hasNext()) {
+							LinkedList<String> valueList = (LinkedList) attributeMap.get(attributeName).attributeMap.get(dataIterator.next());
+							Iterator recordIterator = valueList.iterator();
+							while(recordIterator.hasNext()) {
+								operationTotalSet.add((String) recordIterator.next());
+							}
+//							System.out.println("dsa"+operationTotalSet);
+						}
 					}
+					
+					
+//					System.out.println("asd"+operationTotalSet);
+					if(tempResultSet.isEmpty()) {
+						tempResultSet.addAll(operationTotalSet);
+					}
+					else{
+						HashSet<String> intersectionSet = new HashSet<String>();
+						Iterator recordIterator = operationTotalSet.iterator();
+						while (recordIterator.hasNext()) {
+							String row = (String) recordIterator.next(); 
+							if(tempResultSet.contains(row)) {
+								intersectionSet.add(row);
+							}
+						}	
+						tempResultSet = intersectionSet;
+					}
+//					System.out.println("qwe"+tempResultSet);
 				}
 				else if(operationMap.get(attributeName) instanceof HashSet) {
 					HashSet<String> queryResultSet = (HashSet<String>) operationMap.get(attributeName);

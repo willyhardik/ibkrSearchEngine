@@ -21,9 +21,9 @@ public class IBKRSearchEngine {
 //		LinkedList<String> valueList = (LinkedList) attributeMap.get("~fname").attributeMap.get("1");
 //		System.out.println("DSF"+valueList);
 //		
-		String query = "(fname = hardik or (salary = 2000 and lname = ibkr )) and (fname = shaunak or dept = usa)";
+//		String query = "(fname = hardik or (salary = 2000 and lname = ibkr )) and (fname = shaunak or dept = usa)";
 //		String query = "dept != usa and fname = hardik";
-//		String query = "id >= 4 and dept = usa";
+		String query = "salary > 3000 and dept = india";
 		QueryBuilder queryBuilder = new QueryBuilder(attributeMap);
 		queryBuilder.getResult(query);
 	}

@@ -47,7 +47,7 @@ public class QueryBuilder {
 		resultSet.addAll(queryProcessor.getResults(queue));
 		queryMap.put("#query" + queryNumber, resultSet);
 		query = query.replace("(" + subQuery + ")", "#query" + queryNumber++);
-		System.out.println(resultSet);
+		System.out.println("Final result Set"+resultSet);
 		// convert substring to
 	}
 
