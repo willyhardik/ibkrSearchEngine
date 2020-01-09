@@ -17,13 +17,12 @@ public class IBKRSearchEngine {
 	
 		DatabasePreprocessing databasePreprocessing = new DatabasePreprocessing(employeeRecords, attributeList);
 		HashMap<String, Attribute> attributeMap = (HashMap<String, Attribute>) databasePreprocessing.getObjectMap();
-
 //		LinkedList<String> valueList = (LinkedList) attributeMap.get("~fname").attributeMap.get("1");
 //		System.out.println("DSF"+valueList);
 //		
-//		String query = "(fname = hardik or (salary = 2000 and lname = ibkr )) and (fname = shaunak or dept = usa)";
-//		String query = "dept != usa and fname = hardik";
-		String query = "salary > 3000 and dept = india";
+//		String query = "(name = hardik or (salary = 2000 id > 1)) and (name = shaunak or country = usa)";
+//		String query = "country != usa and name = hardik";
+		String query = "salary > 3000 and country = india";
 		QueryBuilder queryBuilder = new QueryBuilder(attributeMap);
 		queryBuilder.getResult(query);
 	}

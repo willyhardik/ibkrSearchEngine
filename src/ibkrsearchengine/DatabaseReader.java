@@ -21,15 +21,17 @@ public class DatabaseReader {
 //			stmt.executeUpdate("USE Employee");
 			
 			ResultSet rs = ((java.sql.Statement) stmt).executeQuery("Select * from Employee");
+			ResultSetMetaData rsMetaData = rs.getMetaData();
+//			System.out.println(rsMetaData.getColumnCount());
+			
 			
 			while(rs.next()) {
-				String id = rs.getString(1);
-				String fname = rs.getString(2);
-			 	String lname = "ibkr";
-				String dept = rs.getString(3);
-			 	String salary = rs.getString(4);
 				
-				Employee employeeObject = new Employee(id, fname, lname, dept, salary);
+				String id = rs.getString(1);
+				String name = rs.getString(2);
+				String country = rs.getString(3);
+			 	String salary = rs.getString(4);
+				Employee employeeObject = new Employee(id, name, country, salary);
 				employeeRecords.put(id, employeeObject);
 			}
 			
@@ -42,9 +44,8 @@ public class DatabaseReader {
 	public ArrayList<String> getAttributes() {
 		ArrayList<String> attributeList = new ArrayList<String>();
 		attributeList.add("id");
-		attributeList.add("fname");
-		attributeList.add("lname");
-		attributeList.add("dept");
+		attributeList.add("name");
+		attributeList.add("country");
 		attributeList.add("salary");
 		return attributeList;
 	}
