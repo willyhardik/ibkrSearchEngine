@@ -28,9 +28,7 @@ public class QueryProcessor {
 		while (subQueryIterator.hasNext()) {
 			HashMap<String, Object> operationMap = (HashMap) subQueryIterator.next();
 			HashSet<String> tempResultSet = new HashSet<String>();
-			
 			for (String attributeName : operationMap.keySet()) {
-				
 				if(operationMap.get(attributeName) instanceof String) {
 					tempResultSet = equalOperation(attributeName, (String) operationMap.get(attributeName), tempResultSet);
 				}
@@ -83,6 +81,8 @@ public class QueryProcessor {
 				}
 				else if(operationMap.get(attributeName) instanceof HashSet) {
 					HashSet<String> queryResultSet = (HashSet<String>) operationMap.get(attributeName);
+					HashSet<String> instersectionResultSet = new HashSet<String>();
+					
 					if(tempResultSet.isEmpty()) {
 						tempResultSet.addAll(queryResultSet);
 					}
@@ -90,10 +90,11 @@ public class QueryProcessor {
 						Iterator recordIterator = queryResultSet.iterator();
 						while (recordIterator.hasNext()) {
 							String row = (String) recordIterator.next(); 
-							if(!tempResultSet.contains(row)) {
-								tempResultSet.remove(row);
+							if(tempResultSet.contains(row)) {
+								instersectionResultSet.add(row);
 							}
 						}	
+						tempResultSet = instersectionResultSet;
 					}
 				} 
 			}
@@ -135,15 +136,15 @@ public class QueryProcessor {
 //			System.out.println("DSF"+rootNode.data);
 			if(rootNode.data.compareTo(nodeValue) < 0 ) {
 				tempResultSet.add(rootNode.data);
-				tempResultSet.addAll(getNodesFromTree(rootNode.right));
-				rootNode = rootNode.left;
+				tempResultSet.addAll(getNodesFromTree(rootNode.left));
+				rootNode = rootNode.right;
 			}
 			else {
-				rootNode = rootNode.right;
+				rootNode = rootNode.left;
 			}
 //			System.out.println("DSFdsf"+tempResultSet);	
 		}
-//		System.out.println(tesmpResultSet);
+		System.out.println("Dfsgfdghdgh"+tempResultSet);
 		return tempResultSet;
 	}
 	
@@ -169,10 +170,10 @@ public class QueryProcessor {
 	
 
 	public HashSet<String> equalOperation(String attribute, String value, HashSet<String> resultSet) {
-//		System.out.println("-"+attribute + "-" + value + "-");
+		System.out.println("-"+attribute + "-" + value + "-");
 		LinkedList<String> valueList = (LinkedList) attributeMap.get(attribute).attributeMap.get(value);
 //		System.out.println(attributeMap.get(attribute));
-//		System.out.println(attribute + "-" +valueList);
+		System.out.println(attribute + "-" +valueList);
 		Iterator recordIterator = valueList.iterator();
 		HashSet<String> tempResultSet = new HashSet<String>();
 		

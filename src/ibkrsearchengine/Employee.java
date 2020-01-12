@@ -3,7 +3,6 @@ package ibkrsearchengine;
 public class Employee {
 	public String id;
 	public String name;
-//	public String lname;
 	public String country;
 	public String salary;
 	
@@ -21,7 +20,6 @@ public class Employee {
 		super();
 		this.id = id;
 		this.name = name;
-//		this.lname = lname;
 		this.country = country;
 		this.salary = salary;
 	}
@@ -38,13 +36,6 @@ public class Employee {
 	public void setName(String name) {
 		this.name = name;
 	}
-//	public String getLname() {
-//		return lname;
-//	}
-//	
-//	public void setLname(String lname) {
-//		this.lname = lname;
-//	}
 	public String getCountry() {
 		return country;
 	}
@@ -58,27 +49,6 @@ public class Employee {
 		this.salary = salary;
 	}
 	
-	public String getValue(String property) {
-		if("id".equals(property)) {
-			return getId();
-		}
-		else if("name".equals(property)) {
-			return getName();
-		}
-//		else if("lname".equals(property)) {
-//			return getLname();
-//		}
-		else if("salary".equals(property)) {
-			return getSalary();
-		}
-		else if("country".equals(property)) {
-			return getCountry();
-		}
-		else {
-			return " ";
-		}
-				
-	}
 	
 
 }

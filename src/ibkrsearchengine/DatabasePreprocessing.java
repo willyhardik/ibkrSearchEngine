@@ -6,30 +6,30 @@ import java.util.List;
 import java.util.Map;
 
 
-public class DatabasePreprocessing<E> {
+public class DatabasePreprocessing {
 	
-	public HashMap<String, Attribute<Employee>> objectMap = new HashMap<String, Attribute<Employee>>();
+	public HashMap<String, Attribute> objectMap = new HashMap<String, Attribute>();
 	public List<String> attributeNames;
 	
-	public DatabasePreprocessing(HashMap<String, Employee> map, List<String> attributeNames) {
+	public DatabasePreprocessing(HashMap<String, SearchEngineInterface> map, List<String> attributeNames) {
 		this.attributeNames = attributeNames;
 		buildObjectMap(map);
 	}
 
-	public void buildObjectMap(HashMap<String, Employee> map) {
+	public void buildObjectMap(HashMap<String, SearchEngineInterface> map) {
 		
 		for(String name : attributeNames) {
-			List<Employee> list = new ArrayList<>();
+			List<SearchEngineInterface> list = new ArrayList();
 
-			for(Employee employee : map.values()) {
-				list.add(employee);
+			for(SearchEngineInterface record : map.values()) {
+				list.add(record);
 			}
-			objectMap.put(name, new Attribute<Employee>(name, list));
-			objectMap.put("~"+name, new Attribute<Employee>("~"+name, list));
+			objectMap.put(name, new Attribute(name, list, attributeNames.get(0)));
+			objectMap.put("~"+name, new Attribute("~"+name, list, attributeNames.get(0)));
 		}
 	}
 
-	public Map<String, Attribute<Employee>> getObjectMap() {
+	public Map<String, Attribute> getObjectMap() {
 		return objectMap;
 	}
 

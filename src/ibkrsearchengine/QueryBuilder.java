@@ -21,7 +21,7 @@ public class QueryBuilder {
 		this.attributeMap = attributeMap;
 	}
 	
-	public void getResult(String query) {
+	public HashSet<String> getResult(String query) {
 		String subQuery = "";
 		int queryNumber = 1;
 		QueryProcessor queryProcessor = new QueryProcessor(attributeMap);
@@ -48,7 +48,8 @@ public class QueryBuilder {
 		queryMap.put("#query" + queryNumber, resultSet);
 		query = query.replace("(" + subQuery + ")", "#query" + queryNumber++);
 		System.out.println("Final result Set"+resultSet);
-		// convert substring to
+		
+		return resultSet; // convert substring to
 	}
 
 	private String simplifyQuery(String query) {
@@ -141,7 +142,7 @@ public class QueryBuilder {
 //						System.out.println("entered to get node"+getNode(attribute, value, false).data);
 					}
 					else if ("<".equals(operator)) {
-						operationMap.put("~"+attribute, getReverseNode("~"+attribute, value, false));
+						operationMap.put("~"+attribute, getNode(attribute, value, false));
 //						System.out.println("entered to get node"+getNode(attribute, value, false).data);
 					}
 //					else if (">=".equals(operator)) {
@@ -183,22 +184,6 @@ public class QueryBuilder {
 	
 	
 	
-	private TreeNode getReverseNode(String attribute, String value, boolean includerRoot) {
-		TreeNode searchPointer = attributeMap.get(attribute).root;
-		while(searchPointer != null) {
-			if(value.equals(searchPointer.getData())) {
-				return searchPointer;
-			}
-			else if(value.compareTo(searchPointer.getData()) > 0) {
-				searchPointer = searchPointer.left;
-			}
-			else {
-				searchPointer = searchPointer.right;
-			}
-		}
-		
-		return searchPointer;
-	}
 	
 	
 	
